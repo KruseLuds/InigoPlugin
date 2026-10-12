@@ -28,9 +28,13 @@
             #for $which in ["max", "maxtime", "min", "mintime"]
                 #try
                     #set $var_name_new_str = $var_name_str + "_" + $which
-                    #set $var_name = $getattr($current, $var_name_new_str, None)
+                    #set $var_name = $getattr($getattr($getVar($time_period), $var, None), $which, None)
                     #if $var_name is not None and $var_name.has_data
-                        #set $inigoData[$var_name_new_str] = $var_name
+                        #if $which == "maxtime" or $which == "mintime"
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, "unix_epoch")
+                        #else
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, $var)
+                        #end if
                     #else
                         #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 1, var_name_new_str: " + $var_name_new_str + ", no value"}]
                     #end if
@@ -52,11 +56,17 @@
             #for $which in ["max", "maxtime", "min", "mintime"]
                 #try
                     #set $var_name_new_str = $var_name_str + "_" + $which
-                    #set $var_name = $getattr($current, $var_name_new_str, None)
-                    #if $var_name is not None and $var_name.has_data
-                        #set $inigoData[$var_name_new_str] = $var_name
+                    #set $var_name = $getattr($getattr($getVar($time_period), $var, None), $which, None)
+                    #if $var_name is not None and $getattr($var_name, "has_data", False)
+                        #if $which == "maxtime" or $which == "mintime"
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, "unix_epoch")
+                        #else
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, $var)
+                        #end if
                     #else
-                        #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 3, var_name_new_str: " + $var_name_new_str + ", no value"}]
+                        #if $var != "THSW"
+                            #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 3, var_name_new_str: " + $var_name_new_str + ", no value"}]
+                        #end if
                     #end if
                 #except
                     #set $exc_info = $sys.exc_info()
@@ -74,9 +84,9 @@
         #for $time_period in $time_periods
             #try
                 #set $var_name_str = $time_period + "_" + $var + "_sum"
-                #set $var_name = $getattr($current, $var_name_str, None)
+                #set $var_name = $getattr($getattr($getVar($time_period), $var, None), "sum", None)
                 #if $var_name is not None and $var_name.has_data
-                    #set $inigoData[$var_name_str] = $var_name
+                    #set $inigoData[$var_name_str] = $raw_value($var_name, $var)
                 #else
                     #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 5, var_name_str: " + $var_name_str + ", no value"}]
                 #end if
@@ -97,9 +107,13 @@
             #for $which in ["max", "maxtime"]
                 #try
                     #set $var_name_new_str = $var_name_str + "_" + $which
-                    #set $var_name = $getattr($current, $var_name_new_str, None)
+                    #set $var_name = $getattr($getattr($getVar($time_period), $var, None), $which, None)
                     #if $var_name is not None and $var_name.has_data
-                        #set $inigoData[$var_name_new_str] = $var_name
+                        #if $which == "maxtime" or $which == "mintime"
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, "unix_epoch")
+                        #else
+                            #set $inigoData[$var_name_new_str] = $raw_value($var_name, $var)
+                        #end if
                     #else            
                         #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 7, var_name_new_str: " + $var_name_new_str + ", no value"}]
                     #end if
@@ -117,12 +131,18 @@
     #set $var = "wind"
     #for $time_period in $time_periods
         #set $var_name_str = $time_period + "_" + $var
-        #for $which in ["avg", "max", "gustdir", "gustdir_str", "maxtime", "vecdir", "vecdir_str"]
+        #for $which in ["avg", "max", "gustdir", "maxtime", "vecdir"]
             #try
                 #set $var_name_new_str = $var_name_str + "_" + $which
-                #set $var_name = $getattr($current, $var_name_new_str, None)
+                #set $var_name = $getattr($getattr($getVar($time_period), $var, None), $which, None)
                 #if $var_name is not None and $var_name.has_data
-                    #set $inigoData[$var_name_new_str] = $var_name
+                    #if $which == "maxtime"
+                        #set $inigoData[$var_name_new_str] = $raw_value($var_name, "unix_epoch")
+                    #elif $which == "gustdir" or $which == "vecdir"
+                        #set $inigoData[$var_name_new_str] = $raw_value($var_name, "degree_compass")
+                    #else
+                        #set $inigoData[$var_name_new_str] = $raw_value($var_name, "wind")
+                    #end if
                 #else
                     #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "failed at block 9, var_name_new_str: " + $var_name_new_str + ", No value found"}]
                 #end if
@@ -130,6 +150,27 @@
                 #set $exc_info = $sys.exc_info()
                 #set $exc_type_str = $str($exc_info[0].__name__) + ": " + $str($exc_info[1])
                 #set $inigoData["processingErrors"] += [{"type": "error", "msg": "failed at block 10, var_name_new_str: " + $var_name_new_str + ", " + $exc_type_str}]
+            #end try
+        #end for
+        ## Derive compass strings from the aggregate directions, and retain
+        ## the v2.1.3 maxdir / maxdir_compass / vecdir_compass JSON aliases.
+        #for $which in ["gustdir", "vecdir"]
+            #try
+                #set $dir_value = $getattr($getattr($getVar($time_period), "wind", None), $which, None)
+                #if $dir_value is not None and $dir_value.has_data
+                    #set $label = $dir_value.ordinal_compass
+                    #set $inigoData[$var_name_str + "_" + $which + "_str"] = $label
+                    #if $which == "gustdir"
+                        #set $inigoData[$var_name_str + "_maxdir"] = $raw_value($dir_value, "degree_compass")
+                        #set $inigoData[$var_name_str + "_maxdir_compass"] = $label
+                    #else
+                        #set $inigoData[$var_name_str + "_vecdir_compass"] = $label
+                    #end if
+                #end if
+            #except
+                #set $exc_info = $sys.exc_info()
+                #set $exc_type_str = $str($exc_info[0].__name__) + ": " + $str($exc_info[1])
+                #set $inigoData["processingErrors"] += [{"type": "warning", "msg": "wind compass " + $var_name_str + " " + $which + ": " + $exc_type_str}]
             #end try
         #end for
     #end for
