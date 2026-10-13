@@ -862,7 +862,7 @@ class InigoSearchList(weewx.cheetahgenerator.SearchList):
             return json.dumps({**output_dict, **new_dict}, default=lambda x: f"<UNSERIALIZABLE: {type(x).__name__}: {x}>")
 
         if last_report_ts == timespan.stop and last_report is not None:
-            return [{"inigo": {"ts": last_report_ts, "report": last_report}, "sort_dict": sort_dict, "raw_value": raw_value, "hour_ago": hour_ago, "hour_ago_time": hour_ago_time}]
+            return [{"inigo": {"ts": last_report_ts, "report": last_report}, "sort_dict": sort_dict, "raw_value": raw_value, "hour_ago": hour_ago, "hour_ago_time": hour_ago_time, "since_hour": since_hour}]
 
         #log.info(f"{self.__class__.__name__} timespan.start: {timespan.start}")
         #log.info(f"{self.__class__.__name__} timespan.stop: {timespan.stop}")
@@ -938,7 +938,7 @@ class InigoSearchList(weewx.cheetahgenerator.SearchList):
 
         log.debug(f"{self.__class__.__name__} executed in {(t2-t1):.3f} seconds")
 
-        return [{"inigo": {"ts": last_report_ts, "report": last_report}, "sort_dict": sort_dict, "raw_value": raw_value, "hour_ago": hour_ago, "hour_ago_time": hour_ago_time}]
+        return [{"inigo": {"ts": last_report_ts, "report": last_report}, "sort_dict": sort_dict, "raw_value": raw_value, "hour_ago": hour_ago, "hour_ago_time": hour_ago_time, "since_hour": since_hour}]
 
 class InigoService(weewx.engine.StdService):
 
