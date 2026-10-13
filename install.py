@@ -205,6 +205,26 @@ class InigoInstaller(ExtensionInstaller):
             elif not 0 <= tmpsince <= 23:
                 inigo_data_dict["since_hour"] = 0
 
+        since_hour = int(inigo_data_dict.get("since_hour", 0))
+
+        inigo_last_dict = stdreport_dict.get("Inigo-Last", None)
+        if inigo_last_dict is None:
+            stdreport_dict["Inigo-Last"] = InigoLastConfig
+            inigo_last_dict = stdreport_dict.get("Inigo-Last")
+
+        inigo_last_dict["since_hour"] = since_hour
+
+        # Inigo-Last runs at midnight for everything, and again at since_hour once yesterday's rain is complete
+        report_timing = inigo_last_dict.get("report_timing", "")
+        if not isinstance(report_timing, str):
+            report_timing = ",".join(report_timing)
+
+        if report_timing.replace(" ", "") in ("", "@daily,@createIfMissing") or report_timing.startswith("0 0,"):
+            if since_hour == 0:
+                inigo_last_dict["report_timing"] = "@daily,@createIfMissing"
+            else:
+                inigo_last_dict["report_timing"] = f"0 0,{since_hour} * * *,@createIfMissing"
+
         if engine.dry_run:
             engine.printer.out(engine.config_dict)
             engine.printer.out("-" * 72)

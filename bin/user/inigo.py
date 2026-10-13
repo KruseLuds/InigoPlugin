@@ -462,7 +462,7 @@ class PeriodicReportTiming(ReportTiming):
 
         if "@createIfMissing" in line_str:
             self.create_if_missing = True
-            line_str = line_str.replace(",@createIfMissing", "")
+            line_str = ",".join(part for part in line_str.split(",") if part.strip() != "@createIfMissing").strip()
 
         super().__init__(line_str)
 
