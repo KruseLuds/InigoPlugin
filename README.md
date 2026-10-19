@@ -1,10 +1,10 @@
 ## What is the Inigo Plugin?
 
-The Inigo plugin for [weeWX](https://weeWX.com) was created to feed current conditions and past statistics from weeWX weather station software into the [weeWX Weather App](https://play.google.com/store/apps/details?id=com.odiousapps.weewxweather).
+The Inigo plugin for [WeeWX](https://WeeWX.com) was created to feed current conditions and past statistics from WeeWX weather station software into the [WeeWX Weather App](https://play.google.com/store/apps/details?id=com.odiousapps.weewxweather).
 
-## Preparing weeWX
+## Preparing WeeWX
 
-Before you can use the app, you need to add this plugin to weeWX. To find out more about setting up and running weeWX, you can find more details on the [weeWX website](https://weewx.com/downloads/).
+Before you can use the app, you need to add this plugin to WeeWX. To find out more about setting up and running WeeWX, you can find more details on the [WeeWX website](https://weewx.com/downloads/).
 
 
 ## Peak Temperature Detection
@@ -26,7 +26,7 @@ or for pip installs
 pip install numpy
 ```
 
-## How to Install the InigoPlugin on weeWX 5.3 or above
+## How to Install the InigoPlugin on WeeWX 5.3 or above
 
 ### Install with rain reset at midnight or when updating
 
@@ -38,7 +38,7 @@ sudo weectl extension install --yes https://github.com/evilbunny2008/InigoPlugin
 
 Historically rainfall in Australia was given to 9am, so it's useful for comparison reasons to be able to display rain records matching time of day with the old [Bureau of Meteorology](https://reg.bom.gov.au) website.
 
-weeWX 5.3 allows command line arguments to be passed to extension installation scripts, so to use a different time of day use the --since-hour command line argument on first install with an hour between 0 and 23, otherwise midnight will be used.
+WeeWX 5.3 allows command line arguments to be passed to extension installation scripts, so to use a different time of day use the --since-hour command line argument on first install with an hour between 0 and 23, otherwise midnight will be used.
 
 ```
 sudo weectl extension install --yes https://github.com/evilbunny2008/InigoPlugin/archive/main.zip --since-hour 9
@@ -46,13 +46,13 @@ sudo weectl extension install --yes https://github.com/evilbunny2008/InigoPlugin
 
 ### Non system package installs
 
-If weeWX was installed using pip you will need to use full paths for both weectl and the weewx.conf file.
+If WeeWX was installed using pip you will need to use full paths for both weectl and the weewx.conf file.
 
 ```
 sudo /opt/weewx/weewx-venv/bin/weectl extension install --yes --config /opt/weewx/weewx-data/weewx.conf https://github.com/evilbunny2008/InigoPlugin/archive/main.zip 
 ```
 
-## Installing the Skyfield almanac weeWX extension (optional)
+## Installing the Skyfield almanac WeeWX extension (optional)
 
 If you would like to see next moon rise/set in the app, you need to install the Skyfield extension
 
@@ -68,9 +68,9 @@ or
 pip install pandas skyfield
 ```
 
-## Restarting weeWX
+## Restarting WeeWX
 
-You need to restart weeWX to make the above changes work.
+You need to restart WeeWX to make the above changes work.
 
 ```
 sudo systemctl restart weewx
