@@ -11,7 +11,7 @@ import weewx
 from weecfg.extension import ExtensionInstaller
 from weeutil.config import conditional_merge
 
-VERSION="2.1.6"
+VERSION="2.1.7"
 
 InigoDataConfig = {
     "skin": "Inigo-Data",

@@ -14,7 +14,6 @@ import weecfg
 import weewx
 import weewx.cheetahgenerator
 import weewx.engine
-import weewx.manager
 import weewx.reportengine
 import weewx.units
 import weeutil.weeutil
@@ -948,7 +947,8 @@ class InigoService(weewx.engine.StdService):
 
         self.done_work = False
 
-        self.db_lookup = weewx.manager.DBBinder(config_dict).bind_default()
+        # Use the engine's shared binder rather than opening our own, weeWX closes it on shutdown
+        self.db_lookup = self.engine.db_binder.bind_default()
 
         if peak_detector is None:
             processConfigDict(self.__class__.__name__, config_dict)
@@ -1031,5 +1031,7 @@ class InigoService(weewx.engine.StdService):
 
         if self.done_work:
             save_pickle_data(self.__class__.__name__, True)
+
+        self.db_lookup = None
 
         log.info(f"{self.__class__.__name__} v{VERSION} stopped")
